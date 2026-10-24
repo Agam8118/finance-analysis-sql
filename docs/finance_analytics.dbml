@@ -1,0 +1,45 @@
+
+Project finance_analytics {
+  database_type: 'MySQL'
+  Note: 'Personal Finance and Expense Analytics'
+}
+
+Table categories {
+  category_id int [pk, increment]
+  category_name varchar(50) [not null, unique]
+}
+
+Table payment_methods {
+  payment_method_id int [pk, increment]
+  method_name varchar(50) [not null, unique]
+}
+
+Table expenses {
+  transaction_id int [pk, increment]
+  transaction_date date [not null]
+  description varchar(255) [not null]
+  amount decimal(12,2) [not null]
+  transaction_type varchar(10) [not null, note: 'income or expense']
+  category_id int [not null]
+  payment_method_id int [not null]
+
+  indexes {
+    transaction_date
+    transaction_type
+  }
+}
+
+Table budgets {
+  budget_id int [pk, increment]
+  category_id int [not null]
+  budget_month date [not null, note: 'First day of the month']
+  budget_amount decimal(12,2) [not null]
+
+  indexes {
+    (category_id, budget_month) [unique]
+  }
+}
+
+Ref: expenses.category_id > categories.category_id
+Ref: expenses.payment_method_id > payment_methods.payment_method_id
+Ref: budgets.category_id > categories.category_id
